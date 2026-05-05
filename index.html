@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Helps reduce browser caching while testing -->
+  <!-- Helps GitHub Pages/browser refresh while testing -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
@@ -12,149 +12,659 @@
   <title>Lasă o recenzie – Proctoclinic</title>
 
   <style>
+    :root {
+      --green: #718a25;
+      --green-dark: #52691c;
+      --blue: #164177;
+      --blue-soft: #6f9dca;
+      --gold: #f6b800;
+      --gold-dark: #c98d00;
+      --ink: #19345c;
+      --muted: #5d6b7b;
+      --line: #dce6f2;
+      --bg: #f7f9fb;
+      --white: #ffffff;
+      --shadow: 0 22px 60px rgba(25, 52, 92, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #eef4ff, #f8f9fb);
       margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 18%, rgba(113, 138, 37, 0.08), transparent 16rem),
+        radial-gradient(circle at 95% 20%, rgba(111, 157, 202, 0.13), transparent 19rem),
+        linear-gradient(135deg, #ffffff 0%, #f3f7fb 48%, #ffffff 100%);
+      overflow-x: hidden;
     }
 
-    .card {
-      background: white;
-      padding: 32px 26px;
-      border-radius: 22px;
-      max-width: 430px;
-      width: 92%;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.55;
+      background:
+        radial-gradient(circle, rgba(22, 65, 119, 0.08) 1.5px, transparent 2px) 8% 26% / 18px 18px no-repeat,
+        radial-gradient(circle, rgba(113, 138, 37, 0.09) 1.5px, transparent 2px) 78% 72% / 18px 18px no-repeat;
+      z-index: -3;
+    }
+
+    .page {
+      position: relative;
+      width: min(1440px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 54px 42px 52px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .brand {
+      position: absolute;
+      top: 48px;
+      left: 56px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      z-index: 5;
+    }
+
+    .brand-text {
+      line-height: 0.9;
+    }
+
+    .brand-name {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(34px, 4vw, 54px);
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: -1.7px;
+      text-shadow: 0 2px 0 rgba(255,255,255,0.8);
+    }
+
+    .brand-subtitle {
+      margin-top: 8px;
+      font-size: clamp(12px, 1.1vw, 16px);
+      font-weight: 700;
+      color: #1a1f2b;
+    }
+
+    .leaf {
+      width: clamp(62px, 7vw, 104px);
+      height: clamp(62px, 7vw, 104px);
+      filter: drop-shadow(0 8px 16px rgba(82, 105, 28, 0.18));
+    }
+
+    .bg-leaf {
+      position: absolute;
+      left: -24px;
+      top: 130px;
+      width: 170px;
+      height: 170px;
+      opacity: 0.055;
+      transform: rotate(-8deg);
+      z-index: -1;
+    }
+
+    .photo {
+      position: absolute;
+      overflow: hidden;
+      background: #e8eef5;
+      box-shadow: 0 18px 50px rgba(22, 65, 119, 0.10);
+      z-index: -1;
+    }
+
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.82) brightness(1.10) contrast(0.96);
+      transform: scale(1.02);
+    }
+
+    .photo.reception {
+      right: -26px;
+      top: 0;
+      width: min(43vw, 590px);
+      height: 270px;
+      border-bottom-left-radius: 54% 38%;
+      border-bottom-right-radius: 0;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      clip-path: ellipse(78% 68% at 70% 18%);
+    }
+
+    .photo.reception::after,
+    .photo.exterior::after,
+    .photo.tech::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.20), transparent 45%),
+        rgba(255,255,255,0.05);
+      pointer-events: none;
+    }
+
+    .photo.exterior {
+      left: -40px;
+      bottom: 170px;
+      width: min(42vw, 540px);
+      height: 360px;
+      border-top-right-radius: 58% 36%;
+      clip-path: ellipse(82% 72% at 20% 72%);
+      opacity: 0.88;
+    }
+
+    .photo.tech {
+      right: -34px;
+      bottom: 176px;
+      width: min(29vw, 410px);
+      height: 405px;
+      border-radius: 52% 0 0 52%;
+      clip-path: ellipse(75% 66% at 86% 51%);
+      opacity: 0.94;
+    }
+
+    .curve {
+      position: absolute;
+      pointer-events: none;
+      border: 1px solid rgba(113, 138, 37, 0.30);
+      width: 430px;
+      height: 430px;
+      border-radius: 50%;
+      right: -105px;
+      bottom: 212px;
+      z-index: -1;
+    }
+
+    .wave {
+      position: absolute;
+      left: -4%;
+      top: 34%;
+      width: 72%;
+      height: 250px;
+      background: linear-gradient(90deg, rgba(111,157,202,0.18), rgba(255,255,255,0));
+      clip-path: ellipse(70% 42% at 28% 58%);
+      z-index: -2;
+    }
+
+    .main-card {
+      position: relative;
+      width: min(820px, 92vw);
+      margin: 160px auto 0;
+      padding: 78px 54px 42px;
       text-align: center;
-      box-shadow: 0 14px 34px rgba(0,0,0,0.14);
+      background: rgba(255,255,255,0.94);
+      border: 1px solid rgba(220, 230, 242, 0.9);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      z-index: 2;
     }
 
-    .top-stars {
-      font-size: 23px;
-      margin-bottom: 10px;
-      letter-spacing: 2px;
+    .badge {
+      position: absolute;
+      top: -58px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: white;
+      border: 1px solid rgba(220, 230, 242, 0.9);
+      box-shadow: 0 14px 36px rgba(25, 52, 92, 0.13);
+    }
+
+    .badge .leaf {
+      width: 68px;
+      height: 68px;
     }
 
     h1 {
-      font-size: 21px;
-      margin: 8px 0 12px;
-      color: #202124;
+      margin: 0;
+      font-size: clamp(30px, 4vw, 45px);
+      line-height: 1.12;
+      color: var(--blue);
+      letter-spacing: -0.9px;
     }
 
-    p {
-      font-size: 14px;
-      color: #555;
-      line-height: 1.55;
-      margin-bottom: 20px;
+    h1 span {
+      color: var(--green);
+    }
+
+    .accent {
+      width: 46px;
+      height: 4px;
+      margin: 18px auto 18px;
+      border-radius: 99px;
+      background: var(--green);
+    }
+
+    .intro {
+      max-width: 650px;
+      margin: 0 auto 24px;
+      font-size: clamp(17px, 1.75vw, 22px);
+      line-height: 1.45;
+      color: #2f4a73;
     }
 
     .question {
-      font-size: 15px;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 8px;
+      margin: 0 auto 4px;
+      font-size: clamp(17px, 1.55vw, 21px);
+      color: #384a62;
     }
 
-    .small-note {
-      font-size: 12px;
-      color: #888;
-      margin-top: -2px;
-      margin-bottom: 12px;
+    .instruction {
+      margin: 0 auto 26px;
+      font-size: clamp(16px, 1.45vw, 20px);
+      color: #384a62;
     }
 
-    .rating {
+    .stars {
       display: flex;
       justify-content: center;
-      gap: 8px;
-      margin: 10px 0 18px;
+      gap: clamp(16px, 3.2vw, 42px);
+      margin: 4px auto 34px;
+      direction: ltr;
     }
 
     .star {
-      font-size: 48px;
-      color: #d7dce2;
-      text-decoration: none;
+      display: inline-block;
+      font-size: clamp(52px, 7.2vw, 88px);
       line-height: 1;
+      text-decoration: none;
+      color: var(--gold);
+      -webkit-text-stroke: 2px var(--gold-dark);
+      text-shadow:
+        0 3px 0 #d79500,
+        0 10px 22px rgba(246, 184, 0, 0.28);
+      transform-origin: center;
+      transition: transform 160ms ease, filter 160ms ease, text-shadow 160ms ease;
       cursor: pointer;
-      transition: transform 0.18s ease, color 0.18s ease, text-shadow 0.18s ease;
     }
 
     .star:hover,
     .star.active {
-      color: #fbbc04;
-      transform: scale(1.14);
-      text-shadow: 0 4px 14px rgba(251, 188, 4, 0.35);
+      transform: translateY(-6px) scale(1.12);
+      filter: brightness(1.08);
+      text-shadow:
+        0 3px 0 #d79500,
+        0 14px 28px rgba(246, 184, 0, 0.42);
     }
 
     .star:active {
-      transform: scale(0.96);
+      transform: translateY(-1px) scale(0.98);
     }
 
-    .secondary {
-      display: block;
-      padding: 13px;
-      margin-top: 8px;
-      border-radius: 11px;
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: min(360px, 70%);
+      margin: 0 auto 16px;
+      color: #aeb9c6;
+      font-size: 25px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--line);
+    }
+
+    .maps-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 42px;
+      padding: 9px 18px;
+      border: 1.5px solid #3d78bd;
+      border-radius: 12px;
       text-decoration: none;
-      font-weight: bold;
-      background: #f1f3f4;
-      color: #333;
-      transition: 0.2s ease;
+      color: #1e5f9e;
+      font-weight: 700;
+      font-size: 15px;
+      background: rgba(255,255,255,0.62);
+      transition: background 160ms ease, transform 160ms ease;
     }
 
-    .secondary:hover {
-      background: #e5e7ea;
+    .maps-link:hover {
+      background: rgba(111, 157, 202, 0.10);
+      transform: translateY(-1px);
     }
 
-    .hint {
-      font-size: 12px;
-      color: #777;
-      margin-top: 16px;
+    .features {
+      width: min(1280px, 92vw);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      background: rgba(255,255,255,0.90);
+      border: 1px solid rgba(220, 230, 242, 0.85);
+      border-radius: 22px;
+      box-shadow: 0 14px 40px rgba(25, 52, 92, 0.10);
+      backdrop-filter: blur(8px);
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .feature {
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      align-items: center;
+      gap: 18px;
+      padding: 28px 30px;
+      min-height: 126px;
+      border-right: 1px solid var(--line);
+    }
+
+    .feature:last-child {
+      border-right: none;
+    }
+
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      border: 1px solid #e2e9f2;
+      color: var(--green);
+      background: white;
+    }
+
+    .feature h2 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      color: var(--blue);
+    }
+
+    .feature p {
+      margin: 0;
+      color: var(--muted);
       line-height: 1.45;
+      font-size: 14px;
+    }
+
+    .leaf-shape path {
+      fill: currentColor;
+    }
+
+    .icon {
+      width: 36px;
+      height: 36px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @media (max-width: 980px) {
+      .page {
+        padding: 126px 18px 34px;
+        gap: 22px;
+      }
+
+      .brand {
+        top: 26px;
+        left: 26px;
+      }
+
+      .photo.reception {
+        width: 62vw;
+        height: 210px;
+        opacity: 0.50;
+      }
+
+      .photo.exterior {
+        width: 76vw;
+        height: 260px;
+        bottom: 275px;
+        opacity: 0.25;
+      }
+
+      .photo.tech,
+      .curve {
+        display: none;
+      }
+
+      .main-card {
+        margin-top: 104px;
+        padding: 68px 22px 32px;
+      }
+
+      .intro {
+        font-size: 16px;
+      }
+
+      .stars {
+        gap: 12px;
+      }
+
+      .features {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .feature {
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .feature:nth-last-child(-n+2) {
+        border-bottom: none;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        padding-top: 118px;
+      }
+
+      .brand-name {
+        font-size: 34px;
+      }
+
+      .brand .leaf {
+        width: 64px;
+        height: 64px;
+      }
+
+      .photo.reception {
+        width: 86vw;
+        height: 174px;
+        opacity: 0.32;
+      }
+
+      .main-card {
+        margin-top: 72px;
+        border-radius: 20px;
+      }
+
+      .badge {
+        width: 92px;
+        height: 92px;
+        top: -48px;
+      }
+
+      .badge .leaf {
+        width: 56px;
+        height: 56px;
+      }
+
+      h1 {
+        font-size: 30px;
+      }
+
+      .stars {
+        gap: 8px;
+      }
+
+      .star {
+        font-size: 50px;
+        -webkit-text-stroke: 1.4px var(--gold-dark);
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .feature,
+      .feature:nth-last-child(-n+2) {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .feature:last-child {
+        border-bottom: none;
+      }
     }
   </style>
 </head>
 
 <body>
+  <!-- force rebuild branded Romanian stars version 4 -->
 
-  <div class="card">
+  <main class="page">
 
-    <div class="top-stars">⭐⭐⭐⭐⭐</div>
+    <svg class="bg-leaf leaf-shape" viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M80 8C55 14 35 32 24 55c17-11 36-19 57-21-25 9-45 24-59 49 26-8 51-28 61-53 5-13 4-20-3-22Z"/>
+      <path d="M62 4C43 20 31 40 28 64 39 44 51 28 70 15c-1-6-3-10-8-11Z"/>
+    </svg>
 
-    <h1>Vă mulțumim că ați ales Proctoclinic</h1>
-
-    <p>
-      Feedback-ul dumneavoastră îi ajută pe alți pacienți să ia o decizie informată
-      și ne ajută și pe noi să ne îmbunătățim serviciile.
-    </p>
-
-    <div class="question">Cum a fost experiența dumneavoastră?</div>
-    <div class="small-note">
-      Atingeți o stea pentru a lăsa o recenzie pe Google.
+    <div class="brand" aria-label="Proctoclinic">
+      <div class="brand-text">
+        <div class="brand-name">Proctoclinic</div>
+        <div class="brand-subtitle">Clinică proctologică de elită</div>
+      </div>
+      <svg class="leaf leaf-shape" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M82 11C58 14 36 32 25 55c18-11 37-18 58-20-26 9-47 25-62 51 27-8 53-30 63-56 4-10 3-16-2-19Z"/>
+        <path d="M64 5C45 20 32 39 29 65 40 44 53 28 72 15c-1-5-3-8-8-10Z"/>
+      </svg>
     </div>
 
-    <div class="rating" aria-label="Alegeți numărul de stele">
-      <a class="star" data-rating="1" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="1 stea">★</a>
-      <a class="star" data-rating="2" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="2 stele">★</a>
-      <a class="star" data-rating="3" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="3 stele">★</a>
-      <a class="star" data-rating="4" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="4 stele">★</a>
-      <a class="star" data-rating="5" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="5 stele">★</a>
-    </div>
+    <div class="wave"></div>
+    <div class="curve"></div>
 
-    <a class="secondary"
-       href="https://www.google.com/maps/search/?api=1&query=Proctoclinic%20Bucuresti&query_place_id=ChIJERWRD_4BskARzT2DjEtLWCg"
-       rel="noopener noreferrer">
-       Deschide Proctoclinic în Google Maps
-    </a>
+    <figure class="photo reception" aria-hidden="true">
+      <img src="assets/clinic-reception.jpg" alt="">
+    </figure>
 
-    <div class="hint">
-      După ce se deschide Google, alegeți numărul de stele, scrieți recenzia,
-      apoi apăsați „Postați”.
-    </div>
+    <figure class="photo exterior" aria-hidden="true">
+      <img src="assets/clinic-exterior.jpg" alt="">
+    </figure>
 
-  </div>
+    <figure class="photo tech" aria-hidden="true">
+      <img src="assets/medical-technology.jpg" alt="">
+    </figure>
+
+    <section class="main-card" aria-labelledby="title">
+      <div class="badge" aria-hidden="true">
+        <svg class="leaf leaf-shape" viewBox="0 0 100 100">
+          <path d="M82 11C58 14 36 32 25 55c18-11 37-18 58-20-26 9-47 25-62 51 27-8 53-30 63-56 4-10 3-16-2-19Z"/>
+          <path d="M64 5C45 20 32 39 29 65 40 44 53 28 72 15c-1-5-3-8-8-10Z"/>
+        </svg>
+      </div>
+
+      <h1 id="title">Vă mulțumim că ați ales <span>Proctoclinic</span></h1>
+      <div class="accent"></div>
+
+      <p class="intro">
+        Feedback-ul dumneavoastră îi ajută pe alți pacienți să ia o decizie informată
+        și ne ajută și pe noi să ne îmbunătățim serviciile.
+      </p>
+
+      <p class="question">Cum a fost experiența dumneavoastră?</p>
+      <p class="instruction">Atingeți o stea pentru a lăsa o recenzie pe Google.</p>
+
+      <div class="stars" aria-label="Alegeți numărul de stele pentru recenzia Google">
+        <a class="star" data-rating="1" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="1 stea">★</a>
+        <a class="star" data-rating="2" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="2 stele">★</a>
+        <a class="star" data-rating="3" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="3 stele">★</a>
+        <a class="star" data-rating="4" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="4 stele">★</a>
+        <a class="star" data-rating="5" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="5 stele">★</a>
+      </div>
+
+      <div class="divider" aria-hidden="true">♡</div>
+
+      <a class="maps-link"
+         href="https://www.google.com/maps/search/?api=1&query=Proctoclinic%20Bucuresti&query_place_id=ChIJERWRD_4BskARzT2DjEtLWCg"
+         rel="noopener noreferrer">
+        <span aria-hidden="true">📍</span>
+        Găsește Proctoclinic pe Google Maps
+        <span aria-hidden="true">↗</span>
+      </a>
+    </section>
+
+    <section class="features" aria-label="Beneficii Proctoclinic">
+      <article class="feature">
+        <div class="feature-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 36 36">
+            <path d="M18 4l11 4v8c0 8-5 13-11 16C12 29 7 24 7 16V8l11-4Z"/>
+            <path d="M12 17l4 4 8-9"/>
+          </svg>
+        </div>
+        <div>
+          <h2>Experiență și profesionalism</h2>
+          <p>Echipă medicală dedicată și cu vastă experiență.</p>
+        </div>
+      </article>
+
+      <article class="feature">
+        <div class="feature-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 36 36">
+            <path d="M14 5h8v9h9v8h-9v9h-8v-9H5v-8h9V5Z"/>
+            <path d="M10 10h16"/>
+          </svg>
+        </div>
+        <div>
+          <h2>Tehnologie modernă</h2>
+          <p>Aparatură performantă și tratamente avansate.</p>
+        </div>
+      </article>
+
+      <article class="feature">
+        <div class="feature-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 36 36">
+            <path d="M18 30s-9-5.5-12-12c-2-4 0-8 4-8 3 0 5 2 8 5 3-3 5-5 8-5 4 0 6 4 4 8-3 6.5-12 12-12 12Z"/>
+            <path d="M7 27c3-2 5-3 8-3h6c3 0 5 1 8 3"/>
+          </svg>
+        </div>
+        <div>
+          <h2>Îngrijire și discreție</h2>
+          <p>Respectăm intimitatea și oferim îngrijire la cele mai înalte standarde.</p>
+        </div>
+      </article>
+
+      <article class="feature">
+        <div class="feature-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 36 36">
+            <path d="M13 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/>
+            <path d="M25 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/>
+            <path d="M4 30c1-6 5-10 9-10s8 4 9 10"/>
+            <path d="M19 23c2-2 4-3 6-3 4 0 7 4 7 10"/>
+          </svg>
+        </div>
+        <div>
+          <h2>Pacienți mulțumiți</h2>
+          <p>Recenziile dumneavoastră ne inspiră să fim mai buni.</p>
+        </div>
+      </article>
+    </section>
+  </main>
 
   <script>
     const stars = document.querySelectorAll(".star");
@@ -162,11 +672,7 @@
     function highlightStars(rating) {
       stars.forEach(star => {
         const value = Number(star.dataset.rating);
-        if (value <= rating) {
-          star.classList.add("active");
-        } else {
-          star.classList.remove("active");
-        }
+        star.classList.toggle("active", value <= rating);
       });
     }
 
@@ -175,22 +681,14 @@
     }
 
     stars.forEach(star => {
-      star.addEventListener("mouseenter", () => {
-        highlightStars(Number(star.dataset.rating));
-      });
-
-      star.addEventListener("focus", () => {
-        highlightStars(Number(star.dataset.rating));
-      });
+      star.addEventListener("mouseenter", () => highlightStars(Number(star.dataset.rating)));
+      star.addEventListener("focus", () => highlightStars(Number(star.dataset.rating)));
+      star.addEventListener("touchstart", () => highlightStars(Number(star.dataset.rating)), { passive: true });
     });
 
-    document.querySelector(".rating").addEventListener("mouseleave", resetStars);
-
-    if (/Android|iPhone/i.test(navigator.userAgent)) {
-      document.querySelector(".hint").innerText =
-        "După ce se deschide Google, alegeți numărul de stele, scrieți recenzia, apoi apăsați „Postați”.";
-    }
+    const starWrap = document.querySelector(".stars");
+    starWrap.addEventListener("mouseleave", resetStars);
+    starWrap.addEventListener("focusout", resetStars);
   </script>
-
 </body>
 </html>
