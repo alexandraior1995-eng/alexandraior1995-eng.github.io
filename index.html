@@ -17,10 +17,11 @@
       --green: #718a25;
       --gold: #f6b800;
       --gold-dark: #c98d00;
+      --grey-star: #d5dbe4;
+      --grey-star-dark: #b8c1cd;
       --line: #dce6f2;
       --text: #1e3557;
       --muted: #5f6c7a;
-      --review-url: "https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg";
     }
 
     * {
@@ -73,53 +74,76 @@
       -webkit-user-drag: none;
     }
 
-    .hit {
+    .rating-layer {
       position: absolute;
-      display: block;
-      text-decoration: none;
-      border-radius: 999px;
-      outline: none;
-      -webkit-tap-highlight-color: rgba(246, 184, 0, 0.22);
+      left: 26.7%;
+      top: 51.1%;
+      width: 46.6%;
+      height: 11.8%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 4;
     }
 
-    .star-hit {
-      top: 52.2%;
-      width: 8.2%;
-      height: 11.0%;
-    }
-
-    .star-hit::after {
-      content: "★";
-      position: absolute;
-      inset: 0;
+    .star {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      width: 15.2%;
+      height: 100%;
       display: grid;
       place-items: center;
-      font-size: min(7vw, 92px);
+      cursor: pointer;
+      color: var(--grey-star);
+      -webkit-text-stroke: 1.9px var(--grey-star-dark);
+      font-size: min(7.2vw, 92px);
       line-height: 1;
-      color: transparent;
-      transition: color 160ms ease, transform 160ms ease, text-shadow 160ms ease;
-      pointer-events: none;
+      text-shadow:
+        0 3px 0 #bcc5d0,
+        0 9px 20px rgba(25, 52, 92, 0.12);
+      transform-origin: center;
+      transition:
+        color 150ms ease,
+        -webkit-text-stroke-color 150ms ease,
+        transform 150ms ease,
+        filter 150ms ease,
+        text-shadow 150ms ease;
+      -webkit-tap-highlight-color: rgba(246, 184, 0, 0.18);
     }
 
-    .star-hit:hover::after,
-    .star-hit:focus-visible::after {
-      color: rgba(255, 212, 47, 0.26);
-      transform: translateY(-5px) scale(1.05);
-      text-shadow: 0 0 22px rgba(246, 184, 0, 0.45);
+    .star.is-active {
+      color: var(--gold);
+      -webkit-text-stroke-color: var(--gold-dark);
+      text-shadow:
+        0 3px 0 #d79500,
+        0 12px 24px rgba(246, 184, 0, 0.34);
     }
 
-    .star-1 { left: 27.5%; }
-    .star-2 { left: 36.8%; }
-    .star-3 { left: 46.1%; }
-    .star-4 { left: 55.4%; }
-    .star-5 { left: 64.7%; }
+    .star.is-hovered {
+      transform: translateY(-6px) scale(1.10);
+      filter: brightness(1.08);
+    }
+
+    .star:focus-visible {
+      outline: 4px solid rgba(61, 120, 189, 0.24);
+      border-radius: 18px;
+    }
 
     .maps-hit {
+      position: absolute;
       left: 37.0%;
       top: 67.4%;
       width: 26.2%;
       height: 5.8%;
+      display: block;
+      text-decoration: none;
       border-radius: 14px;
+      outline: none;
+      z-index: 4;
+      -webkit-tap-highlight-color: rgba(61, 120, 189, 0.18);
     }
 
     .maps-hit:hover,
@@ -254,12 +278,23 @@
       }
 
       .mobile-star {
-        color: var(--gold);
-        -webkit-text-stroke: 1.2px var(--gold-dark);
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: var(--grey-star);
+        -webkit-text-stroke: 1.2px var(--grey-star-dark);
         font-size: 48px;
         line-height: 1;
         text-decoration: none;
-        text-shadow: 0 3px 0 #d79500, 0 9px 20px rgba(246,184,0,.28);
+        text-shadow: 0 3px 0 #bcc5d0, 0 9px 20px rgba(25,52,92,.12);
+        cursor: pointer;
+        padding: 0;
+      }
+
+      .mobile-star.is-active {
+        color: var(--gold);
+        -webkit-text-stroke-color: var(--gold-dark);
+        text-shadow: 0 3px 0 #d79500, 0 9px 20px rgba(246,184,0,.32);
       }
 
       .mobile-star:active {
@@ -313,13 +348,13 @@
 </head>
 
 <body>
-  <!-- exact visual version based on the approved final mockup, v7 -->
+  <!-- exact visual version with live grey interactive stars, v8 -->
 
   <section class="desktop-exact" aria-label="Lasă o recenzie pentru Proctoclinic">
     <div class="mockup">
       <picture aria-hidden="true">
-        <source srcset="assets/proctoclinic-review-final-mockup.webp" type="image/webp">
-        <img src="assets/proctoclinic-review-final-mockup.png" alt="">
+        <source srcset="assets/proctoclinic-review-final-mockup-no-stars.webp" type="image/webp">
+        <img src="assets/proctoclinic-review-final-mockup-no-stars.png" alt="">
       </picture>
 
       <h1 class="sr-only">Vă mulțumim că ați ales Proctoclinic</h1>
@@ -328,13 +363,15 @@
         și ne ajută și pe noi să ne îmbunătățim serviciile.
       </p>
 
-      <a class="hit star-hit star-1" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="Lasă o recenzie de 1 stea pe Google"></a>
-      <a class="hit star-hit star-2" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="Lasă o recenzie de 2 stele pe Google"></a>
-      <a class="hit star-hit star-3" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="Lasă o recenzie de 3 stele pe Google"></a>
-      <a class="hit star-hit star-4" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="Lasă o recenzie de 4 stele pe Google"></a>
-      <a class="hit star-hit star-5" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="Lasă o recenzie de 5 stele pe Google"></a>
+      <div class="rating-layer" role="radiogroup" aria-label="Alegeți numărul de stele pentru recenzia Google">
+        <button class="star" type="button" data-rating="1" aria-label="1 stea">★</button>
+        <button class="star" type="button" data-rating="2" aria-label="2 stele">★</button>
+        <button class="star" type="button" data-rating="3" aria-label="3 stele">★</button>
+        <button class="star" type="button" data-rating="4" aria-label="4 stele">★</button>
+        <button class="star" type="button" data-rating="5" aria-label="5 stele">★</button>
+      </div>
 
-      <a class="hit maps-hit" href="https://www.google.com/maps/search/?api=1&query=Proctoclinic%20Bucuresti&query_place_id=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="Găsește Proctoclinic pe Google Maps"></a>
+      <a class="maps-hit" href="https://www.google.com/maps/search/?api=1&query=Proctoclinic%20Bucuresti&query_place_id=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="Găsește Proctoclinic pe Google Maps"></a>
     </div>
   </section>
 
@@ -358,12 +395,12 @@
       <p class="mobile-question">Cum a fost experiența dumneavoastră?</p>
       <p class="mobile-instruction">Atingeți o stea pentru a lăsa o recenzie pe Google.</p>
 
-      <div class="mobile-stars">
-        <a class="mobile-star" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="1 stea">★</a>
-        <a class="mobile-star" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="2 stele">★</a>
-        <a class="mobile-star" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="3 stele">★</a>
-        <a class="mobile-star" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="4 stele">★</a>
-        <a class="mobile-star" href="https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="5 stele">★</a>
+      <div class="mobile-stars" role="radiogroup" aria-label="Alegeți numărul de stele">
+        <button class="mobile-star" type="button" data-rating="1" aria-label="1 stea">★</button>
+        <button class="mobile-star" type="button" data-rating="2" aria-label="2 stele">★</button>
+        <button class="mobile-star" type="button" data-rating="3" aria-label="3 stele">★</button>
+        <button class="mobile-star" type="button" data-rating="4" aria-label="4 stele">★</button>
+        <button class="mobile-star" type="button" data-rating="5" aria-label="5 stele">★</button>
       </div>
 
       <a class="mobile-map" href="https://www.google.com/maps/search/?api=1&query=Proctoclinic%20Bucuresti&query_place_id=ChIJERWRD_4BskARzT2DjEtLWCg">📍 Găsește Proctoclinic pe Google Maps ↗</a>
@@ -376,5 +413,54 @@
       <div class="mobile-feature"><strong>Pacienți mulțumiți</strong><span>Recenziile dumneavoastră ne inspiră să fim mai buni.</span></div>
     </div>
   </section>
+
+  <script>
+    const reviewUrl = "https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg";
+
+    function setupStars(selector) {
+      const stars = Array.from(document.querySelectorAll(selector));
+      let selected = 0;
+      let navigating = false;
+
+      function paint(rating, hoveredStar = null) {
+        stars.forEach(star => {
+          const value = Number(star.dataset.rating);
+          star.classList.toggle("is-active", value <= rating);
+          star.classList.toggle("is-hovered", hoveredStar === star);
+          star.setAttribute("aria-checked", String(value === rating));
+        });
+      }
+
+      function resetHover() {
+        if (!navigating) paint(selected);
+      }
+
+      stars.forEach(star => {
+        const rating = Number(star.dataset.rating);
+
+        star.addEventListener("mouseenter", () => paint(rating, star));
+        star.addEventListener("focus", () => paint(rating, star));
+        star.addEventListener("mouseleave", resetHover);
+        star.addEventListener("blur", resetHover);
+
+        star.addEventListener("click", () => {
+          selected = rating;
+          navigating = true;
+          paint(selected, star);
+          setTimeout(() => {
+            window.location.href = reviewUrl;
+          }, 260);
+        });
+
+        star.addEventListener("touchstart", () => {
+          selected = rating;
+          paint(selected, star);
+        }, { passive: true });
+      });
+    }
+
+    setupStars(".star");
+    setupStars(".mobile-star");
+  </script>
 </body>
 </html>
