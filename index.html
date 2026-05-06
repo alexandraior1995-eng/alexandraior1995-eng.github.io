@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Lasă o recenzie – Proctoclinic</title>
+  <style>
+    :root {
+      --gold:#f6b800;
+      --gold-dark:#c98d00;
+      --grey-star:#d5dbe4;
+      --grey-star-dark:#b8c1cd;
+    }
+    * { box-sizing:border-box; }
+    html, body {
+      margin:0;
+      min-height:100%;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(113,138,37,.08), transparent 24rem),
+        radial-gradient(circle at 90% 20%, rgba(111,157,202,.12), transparent 24rem),
+        #f7f9fb;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+    body { min-height:100vh; }
+
+    .desktop-page, .mobile-page {
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:0;
+      overflow-x:hidden;
+    }
+
+    .mockup, .mobile-poster {
+      position:relative;
+      background:white;
+      overflow:hidden;
+    }
+
+    .mockup {
+      width:min(100vw, calc(100vh * 1.333333));
+      aspect-ratio:4/3;
+      max-width:1448px;
+      box-shadow:0 18px 52px rgba(25,52,92,.08);
+    }
+
+    .mobile-poster {
+      display:none;
+      width:min(100vw, 540px);
+      aspect-ratio:1/2;
+      box-shadow:0 18px 52px rgba(25,52,92,.08);
+    }
+
+    picture, img { display:block; width:100%; height:100%; }
+    img { object-fit:contain; user-select:none; -webkit-user-drag:none; }
+
+    .desktop-star-strip {
+      position:absolute;
+      left:27.0%; top:52.05%; width:46.6%; height:12.2%;
+      background:rgba(255,255,255,.985);
+      border-radius:14px;
+      z-index:3;
+      pointer-events:none;
+    }
+    .desktop-rating {
+      position:absolute;
+      left:27.0%; top:52.05%; width:46.6%; height:12.2%;
+      display:flex; justify-content:space-between; align-items:center;
+      z-index:4;
+    }
+    .desktop-map-hit {
+      position:absolute;
+      left:37.0%; top:67.4%; width:26.2%; height:5.8%;
+      display:block; text-decoration:none; border-radius:14px; z-index:4;
+      -webkit-tap-highlight-color:rgba(61,120,189,.18);
+    }
+
+    .mobile-star-strip {
+      position:absolute;
+      left:10.9%; top:53.7%; width:78.2%; height:7.1%;
+      background:rgba(255,255,255,.98);
+      border-radius:22px;
+      z-index:3;
+      pointer-events:none;
+    }
+    .mobile-rating {
+      position:absolute;
+      left:12.1%; top:54.0%; width:75.8%; height:5.0%;
+      display:flex; justify-content:space-between; align-items:center;
+      z-index:4;
+    }
+    .mobile-map-hit {
+      position:absolute;
+      left:16.9%; top:62.55%; width:66.2%; height:3.05%;
+      display:block; text-decoration:none; border-radius:18px; z-index:4;
+      -webkit-tap-highlight-color:transparent;
+      background:transparent !important;
+      box-shadow:none !important;
+      outline:none !important;
+    }
+
+    .desktop-star, .mobile-star {
+      appearance:none;
+      border:0;
+      background:transparent;
+      padding:0; margin:0;
+      display:grid; place-items:center;
+      cursor:pointer;
+      color:var(--grey-star);
+      line-height:1;
+      transform-origin:center;
+      transition:color 150ms ease, -webkit-text-stroke-color 150ms ease, transform 150ms ease, filter 150ms ease, text-shadow 150ms ease;
+      -webkit-tap-highlight-color:rgba(246,184,0,.18);
+    }
+    .desktop-star {
+      width:15.2%; height:100%;
+      -webkit-text-stroke:1.9px var(--grey-star-dark);
+      font-size:min(7.2vw, 92px);
+      text-shadow:0 3px 0 #bcc5d0, 0 9px 20px rgba(25,52,92,.12);
+    }
+    .mobile-star {
+      width:15.7%; height:100%;
+      -webkit-text-stroke:1.45px var(--grey-star-dark);
+      font-size:clamp(54px, 13.8vw, 78px);
+      text-shadow:0 2.5px 0 #bcc5d0, 0 9px 16px rgba(25,52,92,.10);
+    }
+    .desktop-star.is-active, .mobile-star.is-active {
+      color:var(--gold);
+      -webkit-text-stroke-color:var(--gold-dark);
+    }
+    .desktop-star.is-active { text-shadow:0 3px 0 #d79500, 0 12px 24px rgba(246,184,0,.34); }
+    .mobile-star.is-active { text-shadow:0 2.5px 0 #d79500, 0 10px 20px rgba(246,184,0,.28); }
+    .desktop-star.is-hovered { transform:translateY(-6px) scale(1.10); filter:brightness(1.08); }
+    .mobile-star.is-hovered { transform:translateY(-4px) scale(1.08); filter:brightness(1.08); }
+    .desktop-star:focus-visible, .mobile-star:focus-visible { outline:4px solid rgba(61,120,189,.24); border-radius:18px; }
+
+    .desktop-map-hit:hover, .desktop-map-hit:focus-visible {
+      box-shadow:0 0 0 4px rgba(61,120,189,.16);
+      background:rgba(61,120,189,.06);
+    }
+    .mobile-map-hit:hover,
+    .mobile-map-hit:focus,
+    .mobile-map-hit:focus-visible,
+    .mobile-map-hit:active {
+      background:transparent !important;
+      box-shadow:none !important;
+      outline:none !important;
+    }
+
+    .sr-only {
+      position:absolute !important;
+      width:1px !important; height:1px !important;
+      padding:0 !important; margin:-1px !important;
+      overflow:hidden !important; clip:rect(0,0,0,0) !important;
+      white-space:nowrap !important; border:0 !important;
+    }
+
+    @media (max-width:760px) {
+      .desktop-page { display:none; }
+      .mobile-page { display:grid; place-items:start center; min-height:100vh; padding:0; }
+      .mobile-poster { display:block; width:100vw; max-width:540px; box-shadow:none; }
+    }
+    @media (min-width:761px) {
+      .mobile-page { display:none; }
+    }
+  </style>
+</head>
+<body>
+  <section class="desktop-page" aria-label="Lasă o recenzie pentru Proctoclinic">
+    <div class="mockup">
+      <picture aria-hidden="true">
+        <source srcset="assets/proctoclinic-review-final-mockup.webp?v=20" type="image/webp">
+        <img src="assets/proctoclinic-review-final-mockup.png?v=20" alt="">
+      </picture>
+      <div class="desktop-star-strip" aria-hidden="true"></div>
+      <h1 class="sr-only">Vă mulțumim că ați ales Proctoclinic</h1>
+      <div class="desktop-rating" role="radiogroup" aria-label="Alegeți numărul de stele pentru recenzia Google">
+        <button class="desktop-star" type="button" data-rating="1" aria-label="1 stea">★</button>
+        <button class="desktop-star" type="button" data-rating="2" aria-label="2 stele">★</button>
+        <button class="desktop-star" type="button" data-rating="3" aria-label="3 stele">★</button>
+        <button class="desktop-star" type="button" data-rating="4" aria-label="4 stele">★</button>
+        <button class="desktop-star" type="button" data-rating="5" aria-label="5 stele">★</button>
+      </div>
+      <a class="desktop-map-hit" href="https://www.google.com/maps/search/?api=1&query=Proctoclinic%20Bucuresti&query_place_id=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="Găsește Proctoclinic pe Google Maps"></a>
+    </div>
+  </section>
+
+  <section class="mobile-page" aria-label="Lasă o recenzie pentru Proctoclinic">
+    <div class="mobile-poster">
+      <picture aria-hidden="true">
+        <source srcset="assets/proctoclinic-mobile-poster-no-stars.webp?v=20" type="image/webp">
+        <img src="assets/proctoclinic-mobile-poster-no-stars.png?v=20" alt="">
+      </picture>
+      <div class="mobile-star-strip" aria-hidden="true"></div>
+      <h1 class="sr-only">Vă mulțumim că ați ales Proctoclinic</h1>
+      <div class="mobile-rating" role="radiogroup" aria-label="Alegeți numărul de stele pentru recenzia Google">
+        <button class="mobile-star" type="button" data-rating="1" aria-label="1 stea">★</button>
+        <button class="mobile-star" type="button" data-rating="2" aria-label="2 stele">★</button>
+        <button class="mobile-star" type="button" data-rating="3" aria-label="3 stele">★</button>
+        <button class="mobile-star" type="button" data-rating="4" aria-label="4 stele">★</button>
+        <button class="mobile-star" type="button" data-rating="5" aria-label="5 stele">★</button>
+      </div>
+      <a class="mobile-map-hit" href="https://www.google.com/maps/search/?api=1&query=Proctoclinic%20Bucuresti&query_place_id=ChIJERWRD_4BskARzT2DjEtLWCg" aria-label="Găsește Proctoclinic pe Google Maps"></a>
+    </div>
+  </section>
+
+  <script>
+    const reviewUrl = 'https://search.google.com/local/writereview?placeid=ChIJERWRD_4BskARzT2DjEtLWCg';
+    function setupStars(selector) {
+      const stars = Array.from(document.querySelectorAll(selector));
+      let selected = 0;
+      let navigating = false;
+
+      function paint(rating, hoveredStar = null) {
+        stars.forEach(star => {
+          const value = Number(star.dataset.rating);
+          star.classList.toggle('is-active', value <= rating);
+          star.classList.toggle('is-hovered', hoveredStar === star);
+          star.setAttribute('aria-checked', String(value === rating));
+        });
+      }
+
+      function resetHover() {
+        if (!navigating) paint(selected);
+      }
+
+      stars.forEach(star => {
+        const rating = Number(star.dataset.rating);
+        star.addEventListener('mouseenter', () => paint(rating, star));
+        star.addEventListener('focus', () => paint(rating, star));
+        star.addEventListener('mouseleave', resetHover);
+        star.addEventListener('blur', resetHover);
+        star.addEventListener('click', () => {
+          selected = rating;
+          navigating = true;
+          paint(selected, star);
+          setTimeout(() => { window.location.href = reviewUrl; }, 260);
+        });
+        star.addEventListener('touchstart', () => {
+          selected = rating;
+          paint(selected, star);
+        }, { passive:true });
+      });
+    }
+
+    setupStars('.desktop-star');
+    setupStars('.mobile-star');
+  </script>
+</body>
+</html>
